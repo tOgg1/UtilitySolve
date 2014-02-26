@@ -14,3 +14,13 @@ class BayesianNetwork:
 	def finalize():
 		for node in self.nodes:
 			node.finalize()
+
+	def buildVisual():
+		hei = 2
+		# Create minimal bounding box for entire system
+
+		# Determine root-nodes
+
+		# Place nodes in relative-coordinates
+
+		# Place nodes on screen

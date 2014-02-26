@@ -167,8 +167,19 @@ class NetworkLoader:
 			ans = raw_input("Do you want to load anything right now (LoadNr / n)?")
 			if(str(ans) == "n"):
 				return -1
-			while(ans > i or ans < 0):
-				ans = raw_input("Invalid load-value, try again: ")
 
-			return ans
+			# Check if number is outside the bounds, or is not an integer
+			while(True):
+				try:
+					ans = int(ans)
+				except:
+					ans = raw_input("Invalid load-value, try again: ")
+					continue
+
+				if(ans >= i or ans < 1):
+					ans = raw_input("Invalid load-value, try again: ")
+					continue
+				else:
+					break
+			return ans-1
 		return -1
