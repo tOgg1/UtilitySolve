@@ -164,7 +164,7 @@ class NetworkLoader:
 			for tuple in self.saves:
 				print '['+str(i)+'] {0}\t:\t{1}'.format(tuple[0], tuple[1])
 				i = i+1
-			ans = raw_input("Do you want to load anything (LoadNr / n)?")
+			ans = raw_input("Do you want to load anything right now (LoadNr / n)?")
 			if(str(ans) == "n"):
 				return -1
 			while(ans > i or ans < 0):

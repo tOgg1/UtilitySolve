@@ -1,7 +1,7 @@
 class BayesianNode:
 	def __init__(self):
 		self.parents = []
-
+		
 		self.values = []
 		self.CPT = {}
 
