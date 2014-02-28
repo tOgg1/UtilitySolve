@@ -16,7 +16,6 @@ class BayesianNode:
 		BayesianNode.imageHighlighted, BayesianNode.imageHighlightedRect = loadImage("circle_highlighted.png")
 		#BayesianNode.imageConnection, BayesianNode.imageConnectionRect = loadImage("arrow.png")		
 
-
 	def __init__(self, network = None):
 		self.parents = []
 		self.connections = []
@@ -36,8 +35,16 @@ class BayesianNode:
 	def addParent(self, parent):
 		self.parents.append(parent)
 
+		connection = Connection(self, parent)
+		self.addConnection(connection)
+		parent.addConnection(connection)
+
 	def addParents(self, parents):
-		self.parents.extend(parents)
+		for parent in self.parents:
+			self.addParent(parent)
+
+	def getParents(self):
+		return self.parents
 
 	def finalize(self):
 		if(self.network == None):
@@ -57,17 +64,38 @@ class BayesianNode:
 	def getRect(self):
 		return pygame.Rect(position[0] - size, position[1] - size, size, size)
 
+	def addConnection(self, connection):
+		self.connections.append(connection)
+
 	def getConnections(self):
 		return self.connections
 
 class Connection:
-	
+
 	def __init__(self, parent, child):
 		self.parent = parent
 		self.child = child
 
-		#Generate end-points and rectBox
+		#Generate end-points and boundingBox
 		self.endPoints = [self.parent.getPosition(), self.child.getPosition()]
+		self.size = abs(self.endPoints[1] - self.endPoints[0])
+
+		minX = min(self.parent.position[0], self.child.position[0])
+		miny = min(self.parent.position[1], self.child.position[1])
+
+		self.rect = pygame.Rect(minX, minY, size, size)
+
+	def getRect():
+		return self.rect
+
+	def getParent():
+		return self.parent
+
+	def getChild():
+		return self.child
+
+	def getNodes():
+		return [self.parent, self.child]
 
 
 
