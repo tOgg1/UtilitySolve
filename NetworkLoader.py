@@ -155,9 +155,20 @@ class NetworkLoader:
 			self.saves.append([saveName, saveValue.replace("\"", "")])
 			nextIndex = index + 1 
 
+		# Check for default file
+		default = extractValue(saveFileContent, "meta:defaultNetwork")
+
+		if(default != cnf.notFoundHash):
+			answer = raw_input("Default network is " + default + ". Do you want to load it(y/n)?")
+			
+			# Load default save
+			if(answer.lower() == "y"):
+				return [i[0] for i in self.saves].index("Tormod")
+
+
 		# Ask if anything should be loaded
 		if(len(self.saves) == 0):
-			return
+			return None
 		else:
 			pr("Save content found:\n----------------")
 			i = 1
@@ -181,5 +192,5 @@ class NetworkLoader:
 					continue
 				else:
 					break
-			return ans-1
-		return -1
+			return loadSave(ans-1)
+		return None

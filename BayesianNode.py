@@ -21,6 +21,8 @@ class BayesianNode:
 		self.values = []
 		self.CPT = {}
 		self.finalized = False
+		self.position = [0, 0]
+		self.size = 0
 		
 	def addValue(self, value):
 		values.append(value)
@@ -33,3 +35,12 @@ class BayesianNode:
 
 	def getProbability(parent, value):
 		self.lol = true
+
+	def setPosition(position):
+		self.position = position
+
+	def setSize(size):
+		self.size = size
+
+	def getRect():
+		return pygame.Rect(position[0] - size, position[1] - size, size, size)

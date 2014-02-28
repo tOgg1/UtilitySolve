@@ -1,6 +1,7 @@
 from BayesianNetwork import BayesianNetwork
 from BayesianNode import BayesianNode
 from NetworkLoader import NetworkLoader
+from MapManager import MapManager
 
 from Misc import debugPrint as db
 from Misc import normalPrint as pr
@@ -11,57 +12,130 @@ from PyGameHelpers import *
 import pygame
 from pygame.locals import * 
 
-def main():
+import threading
 
-	## Init pyGame
-	pygame.init()
-	screen = pygame.display.set_mode((768, 560))
-	pygame.display.set_caption('UtilitySolver')
-	pygame.mouse.set_visible(1)
+class UtilitySolver:
 
-	# load images
-	BayesianNode.loadImages(1.2)
 
-	loop(screen)
+	def __init__(self):
+		self.tasks = []
+		self.running = False
 
-	# Init network
-	cnf.debug = False
-	loader = NetworkLoader()
+		# Variables to be loaded during run
+		self.screen = None
+		self.save = None
+		self.network = None
 
-	fileToLoad = loader.checkForPossibleSaves()
-	save = None
+		# Variables that can be loaded now
+		self.loader = NetworkLoader()
+		self.mapManager = MapManager()
 
-	if(fileToLoad == -1):
-		pr("Okey, no saves to load, lets make a new network.")
-		name = raw_input("What do you want to call your network? ")
-		save = loader.createSave(name)
-		pr("New network " + name + " created")
-	else:
-		save = loader.loadSave(fileToLoad)
+	def run(self):
 
-	pr("UtilitySolver " + cnf.versionName+"\n")
+		## Init pyGame
+		pygame.init()
+		self.screen = pygame.display.set_mode((768, 560))
+		pygame.display.set_caption('UtilitySolver')
+		pygame.mouse.set_visible(1)
 
-	# Goto mainloop
-	loop(screen)
+		# load images
+		BayesianNode.loadImages(1.2)
 
-def loop(screen):	
+		# Init network
+		cnf.debug = False
+		self.loader = NetworkLoader()
 
-	node1 = BayesianNode()
+		self.save = self.loader.checkForPossibleSaves()
 
-	screen.fill(Color(255,255,255,255))
-	print BayesianNode.imageRect.size
-	screen.blit(BayesianNode.image, BayesianNode.imageRect)
-	pygame.display.flip()
-	#while(True):
-	#pr(cnf.mainMenu)
-	hei = 2342
-	
-def doInference():
-	lol = 2
+		if(self.save == None):
+			pr("Okey, no saves to load, lets make a new network.")
+			name = raw_input("What do you want to call your network? ")
+			self.save = self.loader.createSave(name)
+			pr("New network " + name + " created")
 
-def editNetwork():
-	lol = 4
+		pr("UtilitySolver " + cnf.versionName+"\n")
 
-main()
+		# Goto mainloop
+		self.loop()
+
+	def loop(self):	
+
+		node1 = BayesianNode()
+
+		#screen.fill(Color(255,255,255,255))
+		#print BayesianNode.imageRect.size
+		#screen.blit(BayesianNode.image, BayesianNode.imageRect)
+		#pygame.display.flip()
+
+		self.running = True
+
+		inputThread = threading.Thread(target = self.inputManager)
+		inputThread.start()
+
+		# Set backgroundinitial color to white
+		self.screen.fill(Color(255,255,255,255))
+		try:
+			while(self.running):
+
+				# Event-handling
+				for event in pygame.event.get():
+					if event.type == QUIT:
+						running = False
+						return
+				# Redraw
+				self.screen.blit(BayesianNode.image, BayesianNode.imageRect)
+				pygame.display.flip()
+		except:
+			er("Something went wrong...")
+		finally:
+			# Clean-up
+			self.running = False
+
+			pygame.quit()
+			inputThread.join()
+
+	def inputManager(self):
+		while(self.running):
+			pr(cnf.mainMenu)
+			ans = raw_input("What do you want to do? ")
+
+			while(True):
+				try:
+					ans = int(ans)
+					break
+				except:
+					ans = raw_input("Invalid input, try again: ")
+					continue
+
+			# Decode input
+			if(ans == 1):
+				self.editNetwork()
+			elif(ans == 2):
+				self.saveNetwork()
+			elif(ans == 3):
+				self.loadNetwork()
+			elif(ans == 4):
+				self.running = False
+			#elif(ans == 5):
+
+	# Network functtions
+
+	def editNetwork(self):
+		lol = 3
+
+	def saveNetwork(self):
+		lol = 4
+
+	def loadNetwork(self):
+		lol = 5		
+
+	def doInference(self):
+		lol = 2
+
+	def editNetwork(self):
+		lol = 4
+
+util = UtilitySolver()
+util.run()
 
 

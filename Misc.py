@@ -5,7 +5,7 @@ class Config:
 	notFoundHash = "returnvalue:NotFound"
 	errorHash = "returnvalue:Error"
 	useSaveFile = True
-	mainMenu = "[1]: Edit network\n[2]: Save network\n[3]: Load network\n[4]: "
+	mainMenu = "[1]: Edit network\n[2]: Save network\n[3]: Load network\n[4]: Exit"
 	networkMenu = "[1]: Add Node\n[2]: Edit Node\n[3]: Delete Node\n[4]: Add UtilityNode\n[5]: Do inference"	
 	inferenceMenu = "[1]: Add evidence\n[2]: Calculate utility\n"
 
