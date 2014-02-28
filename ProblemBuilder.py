@@ -16,7 +16,6 @@ import threading
 
 class UtilitySolver:
 
-
 	def __init__(self):
 		self.tasks = []
 		self.running = False
@@ -25,6 +24,7 @@ class UtilitySolver:
 		self.screen = None
 		self.save = None
 		self.network = None
+		self.mapsize = [768, 576]
 
 		# Variables that can be loaded now
 		self.loader = NetworkLoader()
@@ -34,7 +34,7 @@ class UtilitySolver:
 
 		## Init pyGame
 		pygame.init()
-		self.screen = pygame.display.set_mode((768, 560))
+		self.screen = pygame.display.set_mode((self.mapsize[0], self.mapsize[1]))
 		pygame.display.set_caption('UtilitySolver')
 		pygame.mouse.set_visible(1)
 
