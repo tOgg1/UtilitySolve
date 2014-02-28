@@ -36,6 +36,9 @@ class BayesianNode:
 	def addParent(self, parent):
 		self.parents.append(parent)
 
+	def addParents(self, parents):
+		self.parents.extend(parents)
+
 	def finalize(self):
 		if(self.network == None):
 			er("Can't finalize a node who is not a part of a network, please call \"setNetwork()\"")
@@ -62,4 +65,9 @@ class Connection:
 	def __init__(self, parent, child):
 		self.parent = parent
 		self.child = child
+
+		#Generate end-points and rectBox
+		self.endPoints = [self.parent.getPosition(), self.child.getPosition()]
+
+
 

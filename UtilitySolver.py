@@ -120,7 +120,7 @@ class UtilitySolver:
 				self.running = False
 			#elif(ans == 5):
 
-	# Network functtions
+	# Network functions
 
 	def editNetwork(self):
 		lol = 3
