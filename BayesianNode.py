@@ -1,4 +1,5 @@
 from PyGameHelpers import *
+from Misc import *
 
 class BayesianNode:
 
@@ -16,14 +17,18 @@ class BayesianNode:
 		#BayesianNode.imageConnection, BayesianNode.imageConnectionRect = loadImage("arrow.png")		
 
 
-	def __init__(self):
+	def __init__(self, network = None):
 		self.parents = []
+		self.network = network
 		self.values = []
 		self.CPT = {}
 		self.finalized = False
 		self.position = [0, 0]
 		self.size = 0
 		
+	def setNetwork(network):
+		self.network = network
+
 	def addValue(self, value):
 		values.append(value)
 
@@ -31,6 +36,9 @@ class BayesianNode:
 		self.parents.append(parent)
 
 	def finalize(self):
+		if(self.network == None):
+			er("Can't finalize a node who is not a part of a network, please call \"setNetwork()\"")
+
 		self.finalized = True
 
 	def getProbability(parent, value):

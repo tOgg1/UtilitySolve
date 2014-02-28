@@ -28,7 +28,7 @@ class UtilitySolver:
 
 		# Variables that can be loaded now
 		self.loader = NetworkLoader()
-		self.mapManager = MapManager()
+		self.mapManager = MapManager(self.mapsize)
 
 	def run(self):
 
@@ -135,7 +135,7 @@ class UtilitySolver:
 	def editNetwork(self):
 		lol = 4
 
-util = UtilitySolver()
-util.run()
+#util = UtilitySolver()
+#util.run()
 
 

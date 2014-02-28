@@ -1,7 +1,8 @@
 class BayesianNetwork:
 
-	def __init__(self, nodes = None):
+	def __init__(self, mapManager, nodes = None):
 		self.nodes = []
+		self.mapManager = mapManager
 
 		if(nodes == None):
 			return
@@ -10,17 +11,11 @@ class BayesianNetwork:
 
 	def addNode(self, node):
 		self.nodes.append(node)
+		self.mapManager.addNode(node)
 
 	def finalize():
 		for node in self.nodes:
 			node.finalize()
 
-	def buildVisual():
-		hei = 2
-		# Create minimal bounding box for entire system
-
-		# Determine root-nodes
-
-		# Place nodes in relative-coordinates
-
-		# Place nodes on screen
+	def getNodes():
+		return self.nodes
