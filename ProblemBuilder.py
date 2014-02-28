@@ -14,6 +14,8 @@ from pygame.locals import *
 
 import threading
 
+import unittest
+
 class UtilitySolver:
 
 	def __init__(self):
@@ -31,6 +33,12 @@ class UtilitySolver:
 		self.mapManager = MapManager(self.mapsize)
 
 	def run(self):
+		if(testMode != None):
+			pygame.init()
+			self.screen = pygame.display.set_mode((self.mapsize[0], self.mapsize[1]))
+			pygame.display.set_caption('UtilitySolver')
+			pygame.mouse.set_visible(1)
+
 
 		## Init pyGame
 		pygame.init()
@@ -42,7 +50,6 @@ class UtilitySolver:
 		BayesianNode.loadImages(1.2)
 
 		# Init network
-		cnf.debug = False
 		self.loader = NetworkLoader()
 
 		self.save = self.loader.checkForPossibleSaves()
@@ -61,11 +68,6 @@ class UtilitySolver:
 	def loop(self):	
 
 		node1 = BayesianNode()
-
-		#screen.fill(Color(255,255,255,255))
-		#print BayesianNode.imageRect.size
-		#screen.blit(BayesianNode.image, BayesianNode.imageRect)
-		#pygame.display.flip()
 
 		self.running = True
 
@@ -135,7 +137,11 @@ class UtilitySolver:
 	def editNetwork(self):
 		lol = 4
 
-#util = UtilitySolver()
-#util.run()
+
+if __name__ == '__main__':
+	cnf.debug = False
+	util = UtilitySolver()
+	util.run()
+
 
 

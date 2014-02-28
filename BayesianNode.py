@@ -19,6 +19,7 @@ class BayesianNode:
 
 	def __init__(self, network = None):
 		self.parents = []
+		self.connections = []
 		self.network = network
 		self.values = []
 		self.CPT = {}
@@ -41,14 +42,24 @@ class BayesianNode:
 
 		self.finalized = True
 
-	def getProbability(parent, value):
+	def getProbability(self, parent, value):
 		self.lol = true
 
-	def setPosition(position):
+	def setPosition(self, position):
 		self.position = position
 
-	def setSize(size):
+	def setSize(self, size):
 		self.size = size
 
-	def getRect():
+	def getRect(self):
 		return pygame.Rect(position[0] - size, position[1] - size, size, size)
+
+	def getConnections(self):
+		return self.connections
+
+class Connection:
+	
+	def __init__(self, parent, child):
+		self.parent = parent
+		self.child = child
+
