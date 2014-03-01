@@ -130,6 +130,7 @@ class TestClass(unittest.TestCase):
 		node1.addParent(node3)
 		node1.finalize()
 
+	def test_networkValuesAndFinalize(self):
 
 	def test_nodeSizes(self):
 		self.lol = 4
