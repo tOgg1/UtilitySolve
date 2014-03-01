@@ -21,19 +21,20 @@ class TestClass(unittest.TestCase):
 
 	def test_nodeParenting(self):
 		self.assertEqual(len(self.nodes), 10)
+		length = len(self.nodes)
 
-		for i in range(2, len(self.nodes)):
-			self.nodes[i].addParent(self.nodes[i-1])
+		self.nodes[0].addParent(self.nodes[length-1])
 
-		for node in self.nodes:
-			self.assertNotEqual(len(node.getParents()), 0)
+		self.assertNotEqual(len(self.nodes[0].getParents()), 0)
+		self.assertIn(self.nodes[length-1], self.nodes[0].getParents())
 
-		for j in range(len(self.nodes)-1, 1):
-			self.assertIn(self.nodes[j], self.nodes[j-1].getParents())
+		self.nodes[0].addParent(self.nodes[length-2])
+		self.nodes[1].addParent(self.nodes[0])
+		self.nodes[1].addParent(self.nodes[length-1])
 
-			for i in range(len(self.nodes)):
-				if(i != j):
-					self.assertIn(self.nodes[i], self.nodes[j-1].getParents())		
+		self.assertIn(self.nodes[1].getParents()[1], self.nodes[0].getParents())
+
+		self.assertEqual(len(self.nodes[1].getParents()), len(self.nodes[0].getParents()))
 
 	def test_nodePositions(self):
 		for node in self.nodes:
@@ -43,7 +44,6 @@ class TestClass(unittest.TestCase):
 		for node in self.nodes:
 			self.assertEqual(node.position[0], 23)
 			self.assertEqual(node.position[1], 25)
-
 
 	def test_nodeConnections(self):
 		self.lol = 3

@@ -48,7 +48,7 @@ class BayesianNode:
 
 	def finalize(self):
 		if(self.network == None):
-			er("Can't finalize a node who is not a part of a network, please call \"setNetwork()\"")
+			er("Can't finalize a node which is not a part of a network, please call \"setNetwork()\"")
 
 		self.finalized = True
 
@@ -57,6 +57,9 @@ class BayesianNode:
 
 	def setPosition(self, position):
 		self.position = position
+
+	def getPosition(self):
+		return self.position
 
 	def setSize(self, size):
 		self.size = size
@@ -78,12 +81,13 @@ class Connection:
 
 		#Generate end-points and boundingBox
 		self.endPoints = [self.parent.getPosition(), self.child.getPosition()]
-		self.size = abs(self.endPoints[1] - self.endPoints[0])
+		self.size = [abs(self.endPoints[0][0] - self.endPoints[0][1]),
+					 abs(self.endPoints[1][0] - self.endPoints[1][1])]
 
 		minX = min(self.parent.position[0], self.child.position[0])
-		miny = min(self.parent.position[1], self.child.position[1])
+		minY = min(self.parent.position[1], self.child.position[1])
 
-		self.rect = pygame.Rect(minX, minY, size, size)
+		self.rect = pygame.Rect(minX, minY, self.size[0], self.size[1])
 
 	def getRect():
 		return self.rect
