@@ -166,6 +166,47 @@ class TestClass(unittest.TestCase):
 		util.finalize()
 		print "Utility is: ", util.inferUtility()
 
+		# No explicit test result
+		assertEqual(0,0)
+
+	def test_utilityNode2(self):
+		nodes = self.nodes[0:5]
+
+		nodes[0].setName("Do I have time?")
+		nodes[0].setObservable(False)
+		nodes[0].addvalue("Yes")
+		nodes[0].addValue("No")
+
+		nodes[0].setName("Can I afford?")
+		nodes[0].setObservable(False)
+		nodes[0].addvalue("Yes")
+		nodes[0].addValue("No")
+
+		nodes[0].setName("Expected fun")
+		nodes[0].setObservable(False)
+		nodes[0].addvalue("High")
+		nodes[0].addValue("Medium")
+		nodes[0].addValue("Low")
+
+		nodes[0].setName("Do I have time?")
+		nodes[0].setObservable(False)
+		nodes[0].addvalue("Yes")
+		nodes[0].addValue("No")
+
+		nodes[0].setName("Do I have time?")
+		nodes[0].setObservable(False)
+		nodes[0].addvalue("Yes")
+		nodes[0].addValue("No")
+
+		nodes[0].setName("Do I have time?")
+		nodes[0].setObservable(False)
+		nodes[0].addvalue("Yes")
+		nodes[0].addValue("No")
+
+		util = UtilityNode()
+		util.addParent(nodes[1])
+
+
 	def test_networkValuesAndFinalize(self):
 		# Make semi-complex network
 

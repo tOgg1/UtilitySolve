@@ -191,7 +191,6 @@ class BayesianNode:
 		# Set start, we assume a start prob of 0
 		probability = 0
 		
-
 		# If this is observable we can really just check if the value passed in
 		# is the same as the currently set value
 		if(self.observable):
