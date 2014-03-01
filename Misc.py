@@ -11,6 +11,16 @@ class Config:
 				   "[7]: Definalize")
 	inferenceMenu = "[1]: Add evidence\n[2]: Calculate utility\n"
 
+def parseInputToNumber(ans):
+	while(True):
+		try:
+			ans = int(ans)
+			break
+		except:
+			ans = raw_input("Invalid input, try again: ")
+			continue	
+	return ans
+
 def normalPrint(content):
 	print(content)
 

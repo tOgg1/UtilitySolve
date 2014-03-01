@@ -1,5 +1,6 @@
 from PyGameHelpers import *
 from Misc import errorPrint as er, debugPrint as db, normalPrint as pr
+from Misc import *
 
 class BayesianNode:
 
@@ -17,9 +18,9 @@ class BayesianNode:
 		#BayesianNode.imageConnection, BayesianNode.imageConnectionRect = loadImage("arrow.png")		
 
 	def __init__(self, network = None):
+		self.network = network
 		self.parents = []
 		self.connections = []
-		self.network = network
 		self.values = []
 		self.CPT = []
 		self.finalized = False
@@ -30,6 +31,9 @@ class BayesianNode:
 		
 	def setName(self, name):
 		self.name = name
+
+	def getName(self):
+		return self.name
 
 	def setNetwork(self, network):
 		self.network = network
@@ -67,7 +71,6 @@ class BayesianNode:
 		self.finalized = True
 
 		valueLists = [[parent, parent.getValues()] for parent in self.parents]
-		valueLists.append([self, self.values])
 
 		totalLength = 1
 		for parent, valueSet in valueLists:
@@ -75,20 +78,37 @@ class BayesianNode:
 
 		pr("Finalizing node with a CPT of total size " + str(totalLength))
 
-		self.CPT = self.generateCpt([], 0, 0, [], valueLists)
+		self.CPT = [[0]*totalLength for i in range(len(self.values))]
+		emptyArray = []
+		i = -1
+		
+		for value in self.values:
+			i = i+1
+			emptyArray.append([self, value])
+			self.getListPossibleValues(self.CPT, i, 0, emptyArray, valueLists)
+			emptyArray.remove([self, value])
 
 	def getListPossibleValues(self, cpt, i, j, currentSetValues, remainingList):
-		# If we're done
+		# If we're at the bottom of the chain
 		if len(remainingList) == 0:
 			pr("Please specifiy probability of ")
 
 			for parent, value in currentSetValues:
 				pr(str(parent.getName()) + " = " + value)
-			ans = raw_input("Answer: ")
+			ans = parseInputToNumber(raw_input("Answer: "))
+			cpt[i][j] = ans
+			return
 
+		# Else 
 		valueTuple = remainingList.pop()
 		parent = valueTuple[0]
 		values = valueTuple[1]
+
+		for value in values:
+			j = j+1
+			currentSetValues.append([parent, value])
+			self.getListPossibleValues(cpt, i, j, currentSetValues, remainingList)
+			currentSetValues.remove([parent, value])
 
 	def definalize(self):
 		self.finalized = False
