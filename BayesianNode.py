@@ -65,37 +65,49 @@ class BayesianNode:
 		return self.parents
 
 	def finalize(self):
+		if(self.finalized == True):
+			er("Node is already finalized. Please call definalize if you want to refinalize.")
+
 		if(self.network == None):
 			er("Can't finalize a node which is not a part of a network, please call \"setNetwork()\"")
 
 		self.finalized = True
 
+		# Create CPT's
 		valueLists = [[parent, parent.getValues()] for parent in self.parents]
 
 		totalLength = 1
 		for parent, valueSet in valueLists:
 			totalLength *= len(valueSet)
 
-		pr("Finalizing node with a CPT of total size " + str(totalLength))
+		pr("Finalizing node with a CPT of total size " + str(totalLength*len(self.values)))
 
 		self.CPT = [[0]*totalLength for i in range(len(self.values))]
-		emptyArray = []
-		i = -1
-		
-		for value in self.values:
-			i = i+1
-			emptyArray.append([self, value])
-			self.getListPossibleValues(self.CPT, i, 0, emptyArray, valueLists)
-			emptyArray.remove([self, value])
 
-	def getListPossibleValues(self, cpt, i, j, currentSetValues, remainingList):
+		if(self.observable == True):
+			pr("This node is observable. You should therefore make sure only one variable per row/column is set.\nIt will be normalized automatically.")
+		
+
+		emptyArray = []
+		
+		i = 0
+		for value in self.values:
+			emptyArray.append([self, value])
+			self.getListPossibleValues(self.CPT, i, 0, [self, value], emptyArray, list(valueLists))
+			emptyArray.remove([self, value])
+			i = i+1
+
+		print self.CPT
+
+
+	def getListPossibleValues(self, cpt, i, j, rootTuple, currentSetValues, remainingList):
 		# If we're at the bottom of the chain
 		if len(remainingList) == 0:
-			pr("Please specifiy probability of ")
-
+			pr("Please specify probability of " + str(rootTuple[0].getName()).upper() + " equals " + str(rootTuple[1]).upper() + " given: ")
 			for parent, value in currentSetValues:
-				pr(str(parent.getName()) + " = " + value)
-			ans = parseInputToNumber(raw_input("Answer: "))
+				if not parent == rootTuple[0]:
+					pr(str(parent.getName()) + " = " + value)
+			ans = parseInputToNumber(input("Answer: "))
 			cpt[i][j] = ans
 			return
 
@@ -105,10 +117,10 @@ class BayesianNode:
 		values = valueTuple[1]
 
 		for value in values:
-			j = j+1
 			currentSetValues.append([parent, value])
-			self.getListPossibleValues(cpt, i, j, currentSetValues, remainingList)
+			self.getListPossibleValues(cpt, i, j, rootTuple, currentSetValues, list(remainingList))
 			currentSetValues.remove([parent, value])
+			j = j+1
 
 	def definalize(self):
 		self.finalized = False

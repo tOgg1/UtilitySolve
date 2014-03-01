@@ -12,13 +12,9 @@ class Config:
 	inferenceMenu = "[1]: Add evidence\n[2]: Calculate utility\n"
 
 def parseInputToNumber(ans):
-	while(True):
-		try:
-			ans = int(ans)
-			break
-		except:
-			ans = raw_input("Invalid input, try again: ")
-			continue	
+	types = (long, int, float)
+	while not isinstance(ans, types):
+		ans = input("Invalid input, try again: ")
 	return ans
 
 def normalPrint(content):

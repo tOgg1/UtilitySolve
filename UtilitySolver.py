@@ -195,8 +195,7 @@ class UtilitySolver:
 		pr(cnf.inferenceMenu)
 
 	def definalizeNetwork(self):	
-		ans = convertYesNoInput(raw_input("Are you sure you want to definalize the network?"+
-										  "This will destroy all your CPT\'s (y/n): "))
+		ans = convertYesNoInput(raw_input("Are you sure you want to definalize the network?"+										  "This will destroy all your CPT\'s (y/n): "))
 		if(ans == 'y'):
 			ans = convertYesNoInput(raw_input("Are you, like, TOTALLY sure? (y/n): "))
 			if(ans == 'y'):

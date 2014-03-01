@@ -105,18 +105,24 @@ class TestClass(unittest.TestCase):
 
 		self.assertEqual(len(connections1), 0)
 
-	def test_nodeValues(self):
+	def test_nodeValuesAndFinalize(self):
 		node1, node2 = self.nodes[0], self.nodes[1]
 
+		# One parent
 		node1.addParent(node2)
-		
-		node2.setName("Likes bananas")
+		node2.setName("Likes fruit")
 		node2.addValue("Yes")
 		node2.addValue("No")
-		node1.setName("Likes fruit")
+		node1.setName("Likes bananas")
 		node1.addValue("Yes")
 		node1.addValue("No")
 		node1.finalize()
+
+		node3 = self.nodes[2]
+
+		# Two parents
+		node1.addParent()
+
 
 	def test_nodeSizes(self):
 		self.lol = 4
