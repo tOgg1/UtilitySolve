@@ -86,8 +86,8 @@ class BayesianNode:
 
 		if(self.observable == True):
 			pr("This node is observable. You should therefore make sure only one variable per row/column is set.\nIt will be normalized automatically.")
-		
-
+		else:
+			pr("This node is not observable. All column/row-combinations can contain information.\nThe CPT will be normalized automatically")
 		emptyArray = []
 		
 		i = 0
@@ -98,7 +98,6 @@ class BayesianNode:
 			i = i+1
 
 		print self.CPT
-
 
 	def getListPossibleValues(self, cpt, i, j, rootTuple, currentSetValues, remainingList):
 		# If we're at the bottom of the chain

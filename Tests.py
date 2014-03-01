@@ -109,19 +109,26 @@ class TestClass(unittest.TestCase):
 		node1, node2 = self.nodes[0], self.nodes[1]
 
 		# One parent
-		node1.addParent(node2)
 		node2.setName("Likes fruit")
 		node2.addValue("Yes")
 		node2.addValue("No")
 		node1.setName("Likes bananas")
 		node1.addValue("Yes")
 		node1.addValue("No")
-		node1.finalize()
 
-		node3 = self.nodes[2]
+		node1.addParent(node2)
+		node1.finalize()
+		node1.definalize()
 
 		# Two parents
-		node1.addParent()
+		node3 = self.nodes[2]
+		node3.setName("Likes woman")
+		node3.addValue("Yes")
+		node3.addValue("No")
+		node3.addValue("Partially")
+
+		node1.addParent(node3)
+		node1.finalize()
 
 
 	def test_nodeSizes(self):
