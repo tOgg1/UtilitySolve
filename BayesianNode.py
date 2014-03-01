@@ -37,9 +37,15 @@ class BayesianNode:
 		return self.name
 
 	def setNetwork(self, network):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform setNetwork.")
+			return
 		self.network = network
 
 	def addValue(self, value):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform addValue.")
+			return
 		# Set first value added as default value
 		if(self.currentValue == None):
 			self.currentValue = value
@@ -58,6 +64,10 @@ class BayesianNode:
 		self.currentValue = value
 
 	def addParent(self, parent):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform addParent.")
+			return
+
 		self.parents.append(parent)
 
 		connection = Connection(self, parent)
@@ -65,6 +75,9 @@ class BayesianNode:
 		parent.addConnection(connection)
 
 	def addParents(self, parents):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform addParents.")
+			return
 		for parent in self.parents:
 			self.addParent(parent)
 
@@ -79,10 +92,10 @@ class BayesianNode:
 
 	def finalize(self):
 		if(self.finalized == True):
-			er("Node is already finalized. Please call definalize if you want to refinalize.")
+			er("[Node]: Node is already finalized. Please call definalize if you want to refinalize.")
 
 		if(self.network == None):
-			er("Can't finalize a node which is not a part of a network, please call \"setNetwork()\"")
+			er("[Node]: Can't finalize a node which is not a part of a network, please call \"setNetwork()\"")
 
 		self.finalized = True
 
@@ -90,7 +103,7 @@ class BayesianNode:
 			if not self.observable:
 				self.CPT = [[0] for i in range(len(self.values))]
 				for i in range(0,len(self.values)):
-					pr("Please specify probability for " + self.getName() + " = " + str(self.values[i]))
+					pr("[Node]: Please specify probability for " + self.getName() + " = " + str(self.values[i]))
 					ans = parseInputToNumber(input("Answer: "))
 					self.CPT[i] = ans
 					return
@@ -107,14 +120,14 @@ class BayesianNode:
 		for parent, valueSet in valueLists:
 			totalLength *= len(valueSet)
 
-		pr("Finalizing node with a CPT of total size " + str(totalLength*len(self.values)))
+		pr("[Node]: Finalizing node with a CPT of total size " + str(totalLength*len(self.values)))
 
 		self.CPT = [[0]*totalLength for i in range(len(self.values))]
 
 		if(self.observable == True):
-			pr("This node is observable. You should therefore make sure only one variable per row/column is set.\nIt will be normalized automatically.")
+			pr("[Node]: This node is observable. You should therefore make sure only one variable per row/column is set.\n[Node]: The CPT will be normalized automatically.")
 		else:
-			pr("This node is not observable. All column/row-combinations can contain information.\nThe CPT will be normalized automatically")
+			pr("[Node]: This node is not observable. All column/row-combinations can contain information.\n[Node]: The CPT will be normalized automatically")
 		emptyArray = []
 
 		i = 0
@@ -129,7 +142,7 @@ class BayesianNode:
 	def getListPossibleValues(self, cpt, i, j, rootTuple, currentSetValues, remainingList):
 		# If we're at the bottom of the chain
 		if len(remainingList) == 0:
-			pr("Please specify probability of " + str(rootTuple[0].getName()).upper() + " equals " + str(rootTuple[1]).upper() + " given: ")
+			pr("[Node]: Please specify probability of " + str(rootTuple[0].getName()).upper() + " = " + str(rootTuple[1]).upper() + " given: ")
 			for parent, value in currentSetValues:
 				if not parent == rootTuple[0]:
 					pr(str(parent.getName()) + " = " + value)
@@ -152,23 +165,45 @@ class BayesianNode:
 		self.finalized = False
 
 	def setObservable(self, boolean):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform setObservable.")
+			return
 		for parent in self.parents:
 			if not parent.observable:
-				er("Cannot make node observable if parent is unobservable "+
-				   "(this does not make sense logically)")
+				er("[Node]: Cannot make node observable if parent is unobservable "+
+				   "(this does not make any logical sense)")
 				return
 		self.observable = boolean
 
-	def getProbability(self, parent, value):
+	def getProbabilityOfValue(self, value):
+		if not value in self.values:
+			er("[Node]: Value is not in self.values")
+		
+		# Find row
+		row = self.values.index(value)
+
+		# Set start, we assume a start prob of 0
+		probability = 0
+
+		
+		for valueTuple in self.CPT[row]:
+			print valueTuple	
+
+		return probability
+
+
+	def getProbabilityOfTuple(self, value):
 		if(isinstance(parent, str)):
-			for valuePair in self.CPT:
-				if(valuePair[0][0].getName() == parent and valuePair[0][1] == value):
-					return valuePair[1]
+			for row in self.CPT:
+				for valuePair in row:
+					if(valuePair[0][0].getName() == parent and valuePair[0][1] == value):
+						return valuePair[1]
 
 		elif(isinstance(parent, BayesianNode)):
-			for valuePair in self.CPT:
-				if(valuePair[0][0] == parent and valuePair[0][1] == value):
-					return valuePair[1]
+			for row in self.CPT:
+				for valuePair in row:
+					if(valuePair[0][0] == parent and valuePair[0][1] == value):
+						return valuePair[1]
 
 	def setPosition(self, position):
 		self.position = position
@@ -183,15 +218,26 @@ class BayesianNode:
 		return pygame.Rect(position[0] - size, position[1] - size, size, size)
 
 	def addConnection(self, connection):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform addConnection.")
+			return
 		self.connections.append(connection)
 
 	def removeConnection(self, connection):
+		if(self.finalized):
+			er("[Node]: Node is already finalized. Can not perform removeConnection.")
+			return
+		self.connect
 		if connection in self.connections:
 			if(connection.getParent() != self):
 				connection.getParent().removeConnection(connection)
 			self.connections.remove(connection)
 
 	def removeConnectionTo(self, parent):
+		if(finalized):
+			er("[Node]: Node is already finalized. Can not perform removeConnectionTo.")
+			return
+		self.connect
 		for connection in self.connections:
 			if parent == connection.getParent():
 				self.connections.remove(connection)

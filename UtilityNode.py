@@ -11,30 +11,38 @@ class UtilityNode(BayesianNode):
 
 	def finalize(self):
 		if(self.network == None):
-			er("Can't finalize (any) node which is not a part of a network")
+			er("[UtilityNode]: Can't finalize (any) node which is not a part of a network")
 			return
 
 		for parent in self.parents:
 			if not parent.finalized == True:
-				er("Parent is not finalized, what are you doing?! Exiting ...")
+				er("[UtilityNode]: Parent is not finalized, what are you doing?! Exiting ...")
 				return
 			for value in parent.getValues():
-				pr("Please specify utility for " + str(parent.getName()) + " = " + str(value))
+				pr("[UtilityNode]: Please specify utility for " + str(parent.getName()) + " = " + str(value))
 				ans = parseInputToNumber(input("Answer: "))
 				self.utilityTable.append(([parent, value], ans))
 
 	def inferUtility(self):
 		if(self.network == None):
-			er("Can't give the utility of a node not part of a network")
+			er("[UtilityNode]: Can't give the utility of a node not part of a network")
 
-		utility = 0
+		totalUtility = 0
 		for parent in self.parents:
-			curValueForParent = parent.getCurrentValue()
 
-			for utilityTuple in self.utilityTable:
-				if(utilityTuple[0][0] == parent and utilityTuple[0][1] == curValueForParent):
-					utility += utilityTuple[1]
+			if parent.observable == False:
+				for utilityTuple in self.utilityTable:
+					if(utilityTuple[0][0] == parent):
+						probability = parent.getProbabilityOfValue(utilityTuple[0][1])
+						totalUtility += utilityTuple[1]*probability
 
-		return utility
+			else:
+				curValueForParent = parent.getCurrentValue()
+				for utilityTuple in self.utilityTable:
+					if(utilityTuple[0][0] == parent and utilityTuple[0][1] == curValueForParent):
+						totalUtility += utilityTuple[1]
+						break
+		
+		return totalUtility
 
 

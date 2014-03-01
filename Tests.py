@@ -157,6 +157,7 @@ class TestClass(unittest.TestCase):
 
 		node1.setCurrentValue("Yes")
 		node2.setCurrentValue("No")
+		node3.setCurrentValue("Yes")
 
 		node3.finalize()
 		node2.finalize()
