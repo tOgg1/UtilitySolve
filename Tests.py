@@ -20,20 +20,22 @@ class TestClass(unittest.TestCase):
 			self.assertEqual(node.network, self.network)
 
 	def test_nodeParenting(self):
-		self.assertEqual(len(self.nodes), 10)
 		length = len(self.nodes)
-
+		
 		self.nodes[0].addParent(self.nodes[length-1])
 
+		# Check if node 0 has a parent
 		self.assertNotEqual(len(self.nodes[0].getParents()), 0)
+		# Check if the parent is the correct one
 		self.assertIn(self.nodes[length-1], self.nodes[0].getParents())
 
 		self.nodes[0].addParent(self.nodes[length-2])
 		self.nodes[1].addParent(self.nodes[0])
 		self.nodes[1].addParent(self.nodes[length-1])
 
+		# Check if the node added as parent for node 1 is also a parent of node 0
 		self.assertIn(self.nodes[1].getParents()[1], self.nodes[0].getParents())
-
+		# Check if the node parent-lenghts are the same, i.e. all parents have been properly added
 		self.assertEqual(len(self.nodes[1].getParents()), len(self.nodes[0].getParents()))
 
 	def test_nodePositions(self):
@@ -45,11 +47,76 @@ class TestClass(unittest.TestCase):
 			self.assertEqual(node.position[0], 23)
 			self.assertEqual(node.position[1], 25)
 
+		node1, node2 = self.nodes[0], self.nodes[1]
+
+		# Test setPosition and getPosition functions
+		node1.setPosition((0,3))
+		node2.setPosition((0,4))
+
+		self.assertEqual(node1.position[0], 0)
+		self.assertEqual(node1.position[1], 3)
+
+		pos = node1.getPosition()
+
+		self.assertEqual(node1.position, pos)
+
 	def test_nodeConnections(self):
-		self.lol = 3
+		node1, node2, node3 = self.nodes[0], self.nodes[1], self.nodes[2]
+
+		node1.addParent(node3)
+		node2.addParent(node3)
+		node1.addParent(node2)
+
+		# Check inheritance
+		connections1 = node1.getConnections()
+		connections2 = node2.getConnections()
+		connections3 = node3.getConnections()
+
+		# Check basic containment
+		self.assertNotEqual(len(connections1), 0)
+		self.assertNotEqual(connections1, connections2)
+
+		# Check if node1 is the child-part of the first connection in connections1
+		self.assertEqual(connections1[0].getChild(), node1)
+
+		parents1 = [connection.getParent() for connection in connections1]
+		parents2 = [connection.getParent() for connection in connections2]
+
+		self.assertIn(node2, parents1)
+		self.assertIn(node3, parents1)
+
+		for parent in parents2:
+			self.assertIn(parent, parents1)
+
+		# Test removal
+		self.assertIn(node3, parents1)
+
+		node1.removeConnectionTo(node3)
+		parents1 = [connection.getParent() for connection in connections1]
+
+		self.assertNotIn(node3, parents1)
+
+		connection1to2 = connections1[0]
+
+		self.assertEqual(node1, connection1to2.getChild())
+		self.assertEqual(node2, connection1to2.getParent())
+
+		node1.removeConnection(connection1to2)
+
+		self.assertEqual(len(connections1), 0)
 
 	def test_nodeValues(self):
-		self.lol = 4
+		node1, node2 = self.nodes[0], self.nodes[1]
+
+		node1.addParent(node2)
+		
+		node2.setName("Likes bananas")
+		node2.addValue("Yes")
+		node2.addValue("No")
+		node1.setName("Likes fruit")
+		node1.addValue("Yes")
+		node1.addValue("No")
+		node1.finalize()
 
 	def test_nodeSizes(self):
 		self.lol = 4

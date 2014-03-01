@@ -100,15 +100,8 @@ class UtilitySolver:
 		while(self.running):
 			pr(cnf.mainMenu)
 			ans = raw_input("What do you want to do? ")
-
-			while(True):
-				try:
-					ans = int(ans)
-					break
-				except:
-					ans = raw_input("Invalid input, try again: ")
-					continue
-
+			ans = convertInput(ans)
+			
 			# Decode input
 			if(ans == 1):
 				self.editNetwork()
@@ -123,7 +116,27 @@ class UtilitySolver:
 	# Network functions
 
 	def editNetwork(self):
-		lol = 3
+		pr(cnf.networkMenu)
+		ans = raw_input("What do you want to do? ")
+		ans = convertInput(ans)
+
+		# Decode input
+		if(ans == 0):
+			self.finalizeNetwork()
+		elif(ans == 1):
+			self.addNodeToNetwork()
+		elif(ans == 2):
+			self.editNodeInNetwork()
+		elif(ans == 3):
+			self.deleteNodeInNetwork()
+		elif(ans == 4):
+			self.addUtilityNodeToNetwork()
+		elif(ans ==  5):
+			self.addDecisionNodeToNetwork()
+		elif(ans == 6):
+			self.doInferenceOnNetwork()
+		elif(ans == 7):
+			self.definalizeNetwork()
 
 	def saveNetwork(self):
 		lol = 4
@@ -137,11 +150,64 @@ class UtilitySolver:
 	def editNetwork(self):
 		lol = 4
 
+	def convertInput(input):
+		while(True):
+			try:
+				ans = int(ans)
+				break
+			except:
+				ans = raw_input("Invalid input, try again: ")
+				continue	
+		return ans
+
+	def convertYesNoInput(input):
+		while(True):
+			if(ans.lower() != 'y' or ans.lower() != 'n'):
+				ans = raw_input("Invalid input, try again(y/n): ")
+				continue
+			else:
+				break
+		return ans
+
+	def finalizeNetwork(self):
+		ans = convertYesNoInput(raw_input("Are you sure you want to finalize the network? "))
+		ans = convertYesNoInput(ans)
+
+		if(ans == 'n'):
+			return
+		else:
+			self.network.finalize()
+			return
+
+	def editNodeInNetwork(self):
+		lol = 5
+	def deleteNodeInNetwork(self):
+		lol = 5
+	
+	def addUtilityNodeToNetwork(self):
+		lol = 5
+	
+	def addDecisionNodeToNetwork(self):
+		lol = 5
+	
+	def doInferenceOnNetwork(self):
+		pr("Inference for network " + network.name)
+		pr(cnf.inferenceMenu)
+
+	def definalizeNetwork(self):	
+		ans = convertYesNoInput(raw_input("Are you sure you want to definalize the network?"+
+										  "This will destroy all your CPT\'s (y/n): "))
+		if(ans == 'y'):
+			ans = convertYesNoInput(raw_input("Are you, like, TOTALLY sure? (y/n): "))
+			if(ans == 'y'):
+				ans = convertYesNoInput(raw_input("Once again, for my pleasure: "))
+				if(ans == 'y'):
+					self.network.definalize()
 
 if __name__ == '__main__':
 	cnf.debug = False
-	util = UtilitySolver()
-	util.run()
+	#util = UtilitySolver()
+	#util.run()
 
 
 

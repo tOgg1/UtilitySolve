@@ -45,3 +45,6 @@ class MapManager:
 					relevantNodes.append(connection)
 
 		return relevantNodes
+
+	def getQTree():
+		return self.tree

@@ -1,9 +1,16 @@
+from Misc import *
+import pygame
+
 class QTree:
 	max = 16
 
 	def __init__(self, rect = None):
 		self.children = []
 		self.predecessorNodes = []
+		self.expanded = False
+
+		if not isinstance(rect, pygame.Rect):
+			raise ValueError('Rect input to this QuadTree-implementation has to be a pygame.Rect')
 		self.rect = rect
 
 	def insert(child):
@@ -14,6 +21,8 @@ class QTree:
 			self.children.append(child)
 			return
 		else:
+			if not expanded:
+				self.expand()
 			for node in self.predecessorNodes:
 				node.insert(child)
 
@@ -28,6 +37,27 @@ class QTree:
 
 	def contains(child, rect = None):
 		return rect.contains(child.getRect())
+
+	def expand(self):
+
+		if self.expanded:
+			er("QTree-Node already expanded")
+
+		# Top-left
+		self.predecessorNodes[0] = QTree(pygame.Rect(self.rect.left,	self.rect.top,
+										 		   	 self.rect.width/2, self.rect.height/2))
+		# Top-right
+		self.predecessorNodes[1] = QTree(pygame.Rect(self.rect.left + self.rect.width/2,
+													 self.rect.top, self.rect.width/2,
+													 self.rect.height/2))
+		# Bottom-left
+		self.predecessorNodes[2] = QTree(pygame.Rect(self.rect.left, self.rect.top + self.rect.height/2,
+												     self.rect.width/2, self.rect.height/2))
+		# Bottom-right
+		self.predecessorNodes[3] = QTree(pygame.Rect(self.rect.left + self.rect.width/2,
+												     self.rect.top 	+ self.rect.height/2,
+													 self.rect.width/2,	self.rect.height/2))
+		self.expanded = True
 
 	def getChildrenInRegion(region):
 		validChildren = []
