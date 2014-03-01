@@ -63,6 +63,17 @@ class BayesianNode:
 			return
 		self.currentValue = value
 
+		# Update CPT's, if finalized
+		if self.finalized:
+			relevantRow = self.values.index(value)
+
+			for row in self.CPT:
+				for valuePair in row:
+					valuePair[1] = 0
+
+			for valuePair in self.CPT[relevantRow]:
+				valuePair[1] = 1
+
 	def addParent(self, parent):
 		if(self.finalized):
 			er("[Node]: Node is already finalized. Can not perform addParent.")
@@ -105,12 +116,12 @@ class BayesianNode:
 				for i in range(0,len(self.values)):
 					pr("[Node]: Please specify probability for " + self.getName() + " = " + str(self.values[i]))
 					ans = parseInputToNumber(input("Answer: "))
-					self.CPT[i] = ans
+					self.CPT[i] = ([[None, None]], ans)
 					return
 			else:
 				self.CPT = [[0] for i in range(len(self.values))]
 				for i in range(len(self.values)):
-					self.CPT[i] = 1/len(self.values)	
+					self.CPT[i] = ([[None, None]], 1/len(self.values))	
 					return
 
 		# Create CPT's
@@ -132,20 +143,15 @@ class BayesianNode:
 
 		i = 0
 		for value in self.values:
-			emptyArray.append([self, value])
 			self.getListPossibleValues(self.CPT, i, 0, [self, value], emptyArray, list(valueLists))
-			emptyArray.remove([self, value])
 			i = i+1
-
-		print self.CPT
 
 	def getListPossibleValues(self, cpt, i, j, rootTuple, currentSetValues, remainingList):
 		# If we're at the bottom of the chain
 		if len(remainingList) == 0:
 			pr("[Node]: Please specify probability of " + str(rootTuple[0].getName()).upper() + " = " + str(rootTuple[1]).upper() + " given: ")
 			for parent, value in currentSetValues:
-				if not parent == rootTuple[0]:
-					pr(str(parent.getName()) + " = " + value)
+				pr(str(parent.getName()) + " = " + value)
 			ans = parseInputToNumber(input("Answer: "))
 			cpt[i][j] = (list(currentSetValues), ans)
 			return
@@ -184,13 +190,25 @@ class BayesianNode:
 
 		# Set start, we assume a start prob of 0
 		probability = 0
-
 		
-		for valueTuple in self.CPT[row]:
-			print valueTuple	
 
+		# If this is observable we can really just check if the value passed in
+		# is the same as the currently set value
+		if(self.observable):
+			if(value == self.currentValue):
+				return 1
+			else:
+				return 0
+		else:
+			for valueTuple in self.CPT[row]:
+				nodeProb = valueTuple[1]
+
+				for parent, value in valueTuple[0]:
+					if not parent == None:
+						nodeProb *= parent.getProbabilityOfValue(value)	
+
+				probability += nodeProb
 		return probability
-
 
 	def getProbabilityOfTuple(self, value):
 		if(isinstance(parent, str)):

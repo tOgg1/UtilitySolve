@@ -156,7 +156,7 @@ class TestClass(unittest.TestCase):
 		util.addParent(node2)
 
 		node1.setCurrentValue("Yes")
-		node2.setCurrentValue("No")
+		node2.setCurrentValue("No")                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 		node3.setCurrentValue("Yes")
 
 		node3.finalize()
@@ -164,7 +164,7 @@ class TestClass(unittest.TestCase):
 		node1.finalize()
 
 		util.finalize()
-		print util.inferUtility()
+		print "Utility is: ", util.inferUtility()
 
 	def test_networkValuesAndFinalize(self):
 		# Make semi-complex network
