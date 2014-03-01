@@ -1,5 +1,7 @@
 from BayesianNetwork import BayesianNetwork
 from BayesianNode import BayesianNode
+from UtilityNode import UtilityNode
+from DecisionNode import DecisionNode
 from NetworkLoader import NetworkLoader
 from MapManager import MapManager
 

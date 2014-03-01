@@ -1,6 +1,7 @@
 from ProblemBuilder import *
 from BayesianNetwork import *
 from BayesianNode import *
+from UtilityNode import *
 from MapManager import *
 
 # Class for testing
@@ -130,7 +131,45 @@ class TestClass(unittest.TestCase):
 		node1.addParent(node3)
 		node1.finalize()
 
+	def test_utilityNode(self):
+		node1, node2, node3 = self.nodes[0], self.nodes[1], self.nodes[2]
+		util = UtilityNode(self.network)
+
+		node1.setName("Has more than 1 million dollars")
+		node1.setObservable(True)
+		node1.addValue("Yes")
+		node1.addValue("No")
+
+		node2.setName("Winning a gamble of 2 million dollars")
+		node2.setObservable(False)
+		node2.addValue("Yes")
+		node2.addValue("No")
+
+		node3.setName("Has a keen eye for probability")
+		node3.setObservable(True)
+		node3.addValue("Yes")
+		node3.addValue("No")
+
+		node2.addParent(node3)
+
+		util.addParent(node1)
+		util.addParent(node2)
+
+		node1.setCurrentValue("Yes")
+		node2.setCurrentValue("No")
+
+		node3.finalize()
+		node2.finalize()
+		node1.finalize()
+
+		util.finalize()
+		print util.inferUtility()
+
 	def test_networkValuesAndFinalize(self):
+		# Make semi-complex network
+
+		nodeNames = ["Likes hot weather", "Likes bananas", "Likes tropical climate", "Likes women", "Likes partying", "Likes donuts", "Wants to travel to: "]
+		nodeValues = 3
 
 	def test_nodeSizes(self):
 		self.lol = 4

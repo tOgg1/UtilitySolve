@@ -28,6 +28,7 @@ class BayesianNode:
 		self.size = 0
 		self.observable = True
 		self.name = "DefaultNode"
+		self.currentValue = None
 		
 	def setName(self, name):
 		self.name = name
@@ -39,10 +40,22 @@ class BayesianNode:
 		self.network = network
 
 	def addValue(self, value):
+		# Set first value added as default value
+		if(self.currentValue == None):
+			self.currentValue = value
 		self.values.append(value)
 
 	def getValues(self):
 		return self.values
+
+	def getCurrentValue(self):
+		return self.currentValue
+
+	def setCurrentValue(self, value):
+		if not value in self.values:
+			er("Value does not exist in node")
+			return
+		self.currentValue = value
 
 	def addParent(self, parent):
 		self.parents.append(parent)
@@ -73,6 +86,20 @@ class BayesianNode:
 
 		self.finalized = True
 
+		if(len(self.parents) == 0):
+			if not self.observable:
+				self.CPT = [[0] for i in range(len(self.values))]
+				for i in range(0,len(self.values)):
+					pr("Please specify probability for " + self.getName() + " = " + str(self.values[i]))
+					ans = parseInputToNumber(input("Answer: "))
+					self.CPT[i] = ans
+					return
+			else:
+				self.CPT = [[0] for i in range(len(self.values))]
+				for i in range(len(self.values)):
+					self.CPT[i] = 1/len(self.values)	
+					return
+
 		# Create CPT's
 		valueLists = [[parent, parent.getValues()] for parent in self.parents]
 
@@ -89,7 +116,7 @@ class BayesianNode:
 		else:
 			pr("This node is not observable. All column/row-combinations can contain information.\nThe CPT will be normalized automatically")
 		emptyArray = []
-		
+
 		i = 0
 		for value in self.values:
 			emptyArray.append([self, value])
@@ -107,7 +134,7 @@ class BayesianNode:
 				if not parent == rootTuple[0]:
 					pr(str(parent.getName()) + " = " + value)
 			ans = parseInputToNumber(input("Answer: "))
-			cpt[i][j] = ans
+			cpt[i][j] = (list(currentSetValues), ans)
 			return
 
 		# Else 
@@ -133,7 +160,15 @@ class BayesianNode:
 		self.observable = boolean
 
 	def getProbability(self, parent, value):
-		self.lol = true
+		if(isinstance(parent, str)):
+			for valuePair in self.CPT:
+				if(valuePair[0][0].getName() == parent and valuePair[0][1] == value):
+					return valuePair[1]
+
+		elif(isinstance(parent, BayesianNode)):
+			for valuePair in self.CPT:
+				if(valuePair[0][0] == parent and valuePair[0][1] == value):
+					return valuePair[1]
 
 	def setPosition(self, position):
 		self.position = position
